@@ -2,12 +2,13 @@ import json
 
 
 class Receipt:
-    def __init__(self, code, cashier, date_time, price_list):
+    def __init__(self, code, cashier, date_time, price_list, deleted):
         self.code = code
         self.cashier = cashier
         self.date_time = date_time
         self.price_list = price_list
         self.full_price = self.calculate_price()
+        self.deleted = deleted
     def calculate_price(self):
         price = 0
         for p in self.price_list.values():
