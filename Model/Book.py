@@ -15,6 +15,8 @@ class Book:
         self.price = price
         self.genre = genre
 
-
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=0)
 #b = Book('code1', 'Lovac u zitu', '123456', 'J.D. Selindzer', 'Laguna', 253, 2017, 899, 'novel')
 #print(jsonpickle.encode(b, unpicklable= False))
