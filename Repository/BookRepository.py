@@ -142,6 +142,7 @@ b6 = Book('code6', 'Veliki prasak je eksplodirao','197000','Russel R. Standish',
 b7 = Book('code7','Iluminati 666','110459','Milan Vidojevic','Mali Princ',199,2015,400,'sci-fi',False)
 b8 = Book('code8','21 lekcija za 21 vek','131662','Juval Noa Harari','Laguna',430,2019,1299,'scientific literature',True)
 b9 = Book('code9','Lovac u zitu','123456','J.D. Selindzer','Laguna',253, 2017, 899,'novel',True)
+b10 = Book('code10','Crne rupe i bebe vaseljene','591138','Stiven Hoking','Alnari',162,2002,399,'scientific literature',True)
 
 bookrepo = BookRepository()
 bookrepo.add(b1)
@@ -153,6 +154,7 @@ bookrepo.add(b6)
 bookrepo.add(b7)
 bookrepo.add(b8)
 bookrepo.add(b9)
+bookrepo.add(b10)
 
 for b in bookrepo.books:
     b.print_book()
