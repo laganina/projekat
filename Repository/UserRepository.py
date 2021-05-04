@@ -13,18 +13,18 @@ class UserRepository:
     def load(self):
         for root, dirs, files in os.walk("."):
             for filename in files:
-                if filename == 'users.json':
-                    with open('users.json', 'r') as jsonfile:
+                if filename == "users.json":
+                    with open('data/users.json', 'r') as jsonfile:
                         lista = json.load(jsonfile)
                         for u in lista:
                             user = json.loads(u, object_hook=lambda d: SimpleNamespace(**d))
                             self.users.append(
                                 User(user.username, user.password, user.first_name, user.last_name, user.user_type,
-                                     user.deleted))
+                                 user.deleted))
 
     def get(self, username):
         for user in self.users:
-            if user.username == username:
+            if user.username == username and user.deleted == False:
                 return user
         return None
 
@@ -52,7 +52,7 @@ class UserRepository:
                 json_users.append(python_user.to_json())
 
             lista = json.dumps(json_users)
-            with open('users.json', "w") as jsonfile:
+            with open('data/users.json', "w") as jsonfile:
                 for user in lista:
                     jsonfile.write(user)
 
@@ -70,7 +70,7 @@ class UserRepository:
                 json_users.append(python_user.to_json())
 
             lista = json.dumps(json_users)
-            with open('users.json', "w") as jsonfile:
+            with open('data/users.json', "w") as jsonfile:
                 for user in lista:
                     jsonfile.write(user)
             return True
@@ -93,7 +93,7 @@ class UserRepository:
                     json_users.append(python_user.to_json())
 
                 lista = json.dumps(json_users)
-                with open('users.json', "w") as jsonfile:
+                with open('data/users.json', "w") as jsonfile:
                     for user in lista:
                         jsonfile.write(user)
 
@@ -118,7 +118,7 @@ class UserRepository:
                 json_users.append(python_user.to_json())
 
             lista = json.dumps(json_users)
-            with open('users.json', "w") as jsonfile:
+            with open('data/users.json', "w") as jsonfile:
                 for user in lista:
                     jsonfile.write(user)
 
@@ -127,16 +127,7 @@ class UserRepository:
         return False
 
 
-u1 = User('laganina', 'vandrful', 'severna', 'juznic', 'administrator', False)
-u2 = User('devedesete', 'samojako', 'Cetnik', 'Mirko', 'manager', True)
-u3 = User('ribojzla', 'majas1a', 'Rajko', 'Cardakovic', 'manager', False)
-u4 = User('mehveh', 'sv3j3zavj3ra', 'Milojka', 'Ruzinovic', 'salesman', False)
 
-userrepo = UserRepository()
-userrepo.add(u1)
-userrepo.add(u2)
-userrepo.add(u3)
-userrepo.add(u4)
-
-for u in userrepo.users:
-    u.print_user()
+#
+# for u in userrepo.users:
+#     u.print_user()

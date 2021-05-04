@@ -14,8 +14,13 @@ class User:
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=0)
 
-
-    def print_user(self):
-        print(
-            '[username: ' + self.username + ' ,password: ' + self.password + ' ,first name: ' + self.first_name + ' ,last name: ' + self.last_name + ' ,user type:' + str(self.user_type) + ' ,deleted:' + str(
-                self.deleted)+']')
+    def __str__(self):
+        return "\n".join([
+            "",
+            "{:>10}: {}".format("Korisnicko ime", self.username),
+            "{:>15}: {}".format("Lozinka", self.password),
+            "{:>10}: {}".format("Ime", self.first_name),
+            "{:>15}: {}".format("Prezime", self.last_name),
+            "{:>10}: {}".format("Tip korisnika", self.user_type),
+            "{:>15}: {}".format("Da li je korisnik obrisan: ", self.deleted)
+        ])
