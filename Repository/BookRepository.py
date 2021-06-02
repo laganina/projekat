@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 from Model.Book import Book
 
+
 # TREBALO BI DA SE BARATA SA PYTHON OBJEKTIMA
 
 class BookRepository:
@@ -17,7 +18,6 @@ class BookRepository:
                 if filename == 'books.json':
                     with open("data/books.json", 'r') as jsonfile:
                         lista = json.load(jsonfile)
-                        print(len(lista))
                         for b in lista:
                             book = json.loads(b, object_hook=lambda d: SimpleNamespace(**d))
                             self.books.append(

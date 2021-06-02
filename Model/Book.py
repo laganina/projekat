@@ -24,7 +24,6 @@ class Book:
 
     def print(self):
         format_linije = "{:10} {:20} {:10} {:20} {:10} {:4} {:11}{:10}       {:20}"
-
         print()
         print(format_linije.format(self.code, self.name, self.isbn, self.author, self.publisher, self.page_number, self.year, self.price, self.genre))
 
