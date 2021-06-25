@@ -34,14 +34,26 @@ def login():
                 return user
 
 
-def prikazsvihknjiga():
+def prikazsvihknjiga(usertype):
     bookrepo = BookRepository()
-    format_linije = "{:10} {:20} {:10} {:20} {:10} {:10} {:10} {:10} {:20}"
-    print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-    print(
-        format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10, "-" * 20))
-    for book in bookrepo.get_all_undeleted():
-        book.print()
+    format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
+    format_linije1 = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20} {:8}"
+
+
+    if usertype=="administrator":
+        print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr", "Brisano"))
+        print(
+            format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                 "-" * 20, "-"*8))
+        for book in bookrepo.books:
+            book.printdeleted()
+    else:
+        print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
+        print(
+            format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                  "-" * 20))
+        for book in bookrepo.get_all_undeleted():
+            book.print()
     print()
     i = 666
     while i != 0:
@@ -54,56 +66,134 @@ def prikazsvihknjiga():
         print('0 --- povratak na prethodni meni.')
         i = int(input())
         books = bookrepo.get_all_undeleted()
+        booksdel = bookrepo.books
+
         if i == 1:
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            books.sort(key=lambda x: x.name, reverse=False)
+            if usertype == "administrator":
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                booksdel.sort(key=lambda x: x.name, reverse=False)
 
-            for book in books:
-                book.print()
+                for book in booksdel:
+                    book.printdeleted()
+            else:
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                books.sort(key=lambda x: x.name, reverse=False)
+
+                for book in books:
+                    book.print()
             print()
 
         elif i == 2:
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            books.sort(key=lambda x: x.genre, reverse=False)
-            for book in books:
-                book.print()
+            if usertype == "administrator":
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                booksdel.sort(key=lambda x: x.name, reverse=False)
+
+                for book in booksdel:
+                    book.printdeleted()
+            else:
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                books.sort(key=lambda x: x.genre, reverse=False)
+
+                for book in books:
+                    book.print()
             print()
 
         elif i == 3:
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            books.sort(key=lambda x: x.author, reverse=False)
-            for book in books:
-                book.print()
-            print()
+            if usertype == "administrator":
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                booksdel.sort(key=lambda x: x.name, reverse=False)
+
+                for book in booksdel:
+                    book.printdeleted()
+            else:
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                books.sort(key=lambda x: x.author, reverse=False)
+
+                for book in books:
+                    book.print()
 
         elif i == 4:
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            books.sort(key=lambda x: x.publisher, reverse=False)
-            for book in books:
-                book.print()
-            print()
+            if usertype == "administrator":
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                booksdel.sort(key=lambda x: x.name, reverse=False)
+
+                for book in booksdel:
+                    book.printdeleted()
+            else:
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                books.sort(key=lambda x: x.publisher, reverse=False)
+
+                for book in books:
+                    book.print()
 
         elif i == 5:
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            books.sort(key=lambda x: x.price, reverse=False)
-            for book in books:
-                book.print()
-            print()
+            if usertype == "administrator":
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                booksdel.sort(key=lambda x: x.name, reverse=False)
+
+                for book in booksdel:
+                    book.printdeleted()
+            else:
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                books.sort(key=lambda x: x.price, reverse=False)
+
+                for book in books:
+                    book.print()
 
         else:
             return None
@@ -135,10 +225,12 @@ def isinpricerange(min, max, price):
     return min <= price <= max
 
 
-def svepretrageKnjiga():
-    bookerepo = BookRepository()
-    books = bookerepo.get_all_undeleted()
-    format_linije = "{:10} {:20} {:10} {:20} {:10} {:10} {:10} {:10} {:20}"
+def svepretrageKnjiga(usertype):
+    bookrepo = BookRepository()
+    books = bookrepo.get_all_undeleted()
+    format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
+    format_linije1 = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20} {:8}"
+
     i = 7
     while i != 0:
         print('1 --- pretraga po sifri.')
@@ -153,86 +245,197 @@ def svepretrageKnjiga():
             sifra = input('Unesite sifru za pretragu. \n')
             # searched = [x for x in books if containsCode(x.code, sifra)]
 
-            searched = []
-            for book in books:
-                if containsCode(book.code, sifra) == True:
-                    searched.append(book)
+            if usertype == "administrator":
+                searched = []
+                for book in bookrepo.books:
+                    if containsCode(book.code, sifra) == True:
+                        searched.append(book)
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            for book in searched:
-                book.print()
+                for book in searched:
+                    book.print()
+            else:
+                searched = []
+                for book in books:
+                    if containsCode(book.code, sifra) == True:
+                        searched.append(book)
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                for book in searched:
+                    book.print()
             print()
         elif i == 2:
             naziv = input('Unesite naziv za pretragu. \n')
             # searched = [x for x in books if containsName(x.name, naziv)]
-            searched = []
-            for book in books:
-                if containsName(book.name, naziv) == True:
-                    searched.append(book)
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            for book in searched:
-                book.print()
-            print()
+            if usertype == "administrator":
+                searched = []
+                for book in bookrepo.books:
+                    if containsName(book.name, naziv) == True:
+                        searched.append(book)
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+
+                for book in searched:
+                    book.print()
+            else:
+                searched = []
+                for book in books:
+                    if containsName(book.name, naziv) == True:
+                        searched.append(book)
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                for book in searched:
+                    book.print()
+
         elif i == 3:
             autor = input('Unesite ime autora za pretragu. \n')
             # searched = [x for x in books if containsAuthor(x.author, autor)]
-            searched = []
-            for book in books:
-                if containsAuthor(book.author, autor) == True:
-                    searched.append(book)
+            if usertype == "administrator":
+                searched = []
+                for book in bookrepo.books:
+                    if containsAuthor(book.author, autor) == True:
+                        searched.append(book)
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                for book in searched:
+                    book.print()
+            else:
+                searched = []
+                for book in books:
+                    if containsAuthor(book.author, autor) == True:
+                        searched.append(book)
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            for book in searched:
-                book.print()
-            print()
+                for book in searched:
+                    book.print()
+
         elif i == 4:
             zanr = input('Unesite ime zanra za pretragu. \n')
             # searched = [x for x in books if containsGenre(x.genre, zanr)]
-            searched = []
-            for book in books:
-                if containsGenre(book.genre, zanr) == True:
-                    searched.append(book)
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            for book in searched:
-                book.print()
+            if usertype == "administrator":
+                searched = []
+                for book in bookrepo.books:
+                    if containsGenre(book.genre, zanr) == True:
+                        searched.append(book)
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+
+
+                for book in searched:
+                    book.print()
+            else:
+                searched = []
+                for book in books:
+                    if containsGenre(book.genre, zanr) == True:
+                        searched.append(book)
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                for book in searched:
+                    book.print()
+
+
             print()
         elif i == 5:
             izdavac = input('Unesite ime izdavaca za pretragu. \n')
             # searched = [x for x in books if containsPublisher(x.publisher, izdavac)]
-            searched = []
-            for book in books:
-                if containsPublisher(book.publisher, izdavac) == True:
-                    searched.append(book)
+            if usertype == "administrator":
+                searched = []
+                for book in bookrepo.books:
+                    if containsPublisher(book.publisher, izdavac) == True:
+                        searched.append(book)
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                for book in searched:
+                    book.print()
+            else:
+                searched = []
+                for book in books:
+                    if containsPublisher(book.publisher, izdavac) == True:
+                        searched.append(book)
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
 
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            for book in searched:
-                book.print()
+                for book in searched:
+                    book.print()
+
+
+
+
             print()
         elif i == 6:
             min = int(input('Unesite minimalnu cenu za pretragu. \n'))
             max = int(input('Unesite maksimalnu cenu za pretragu. \n'))
             # searched = [x for x in books if isinpricerange(min, max, x.price)]
-            searched = []
-            for book in books:
-                if isinpricerange(min, max, book.price) == True:
-                    searched.append(book)
-            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
-            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
-                                       "-" * 20))
-            for book in searched:
-                book.print()
+            if usertype == "administrator":
+                searched = []
+                for book in bookrepo.books:
+                    if isinpricerange(min, max, book.price) == True:
+                        searched.append(book)
+                print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                            "Zanr", "Brisano"))
+                print(
+                    format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                          "-" * 10,
+                                          "-" * 20, "-" * 8))
+                for book in searched:
+                    book.print()
+            else:
+                searched = []
+                for book in books:
+                    if isinpricerange(min, max, book.price) == True:
+                        searched.append(book)
+                print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena",
+                                           "Zanr"))
+                print(
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                                         "-" * 20))
+
+                for book in searched:
+                    book.print()
+
+
             print()
         else:
             return None
@@ -243,7 +446,7 @@ def pretragaAkcija():
     offers = specialOfferRepo.get_all_undeleted()
     bookRepo = BookRepository()
 
-    format_linije = "{:10} {:20} {:10} {:20} {:10} {:10} {:10} {:10} {:20}"
+    format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
     i = 7
     while i != 0:
         print('1 --- pretraga po sifri.')
@@ -263,7 +466,7 @@ def pretragaAkcija():
                     print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
                     print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
                                                "Akc. Cena", "Zanr"))
-                    print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
+                    print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
                                                "-" * 10,
                                                "-" * 20))
 
@@ -359,14 +562,14 @@ def prikaziAkcije():
     offers = specialOfferRepo.get_all_undeleted()
     bookRepo = BookRepository()
 
-    format_linije = "{:10} {:20} {:10} {:20} {:10} {:10} {:10} {:10} {:20}"
+    format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
 
     for offer in offers:
         print("Kod: ", offer.code)
         print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
         print(
             format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Akc. Cena", "Zanr"))
-        print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
+        print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
                                    "-" * 20))
 
         for code in offer.books_and_prices.keys():
@@ -407,7 +610,7 @@ def prikaziAkcije():
                 print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Akc. Cena",
                                            "Zanr"))
                 print(
-                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
                                          "-" * 20))
                 print()
 
@@ -438,7 +641,7 @@ def prikaziAkcije():
                 print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Akc. Cena",
                                            "Zanr"))
                 print(
-                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10, "-" * 10,
+                    format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
                                          "-" * 20))
                 print()
 
@@ -451,26 +654,258 @@ def prikaziAkcije():
     else:
         return None
 
+def registracija():
+    ime = input('Unesite ime: ')
+    prezime = input('Unesite prezime: ')
+    username = ''
+    kontrolna = 1
+    userRepo = UserRepository()
+    while kontrolna == 1:
 
-def showMenuForAdmin():
+        username = input('Unesite username: ')
+        user = userRepo.get_undeleted(username)
+
+        if user is  None:
+            kontrolna = 0
+        else:
+            print('Ovaj username vec postoji, molim Vas ponovite unos.')
+
+    password = input('Unesti lozinku: ')
+    type = ''
+    i = 0
+    while i == 0:
+        usertype = input('Odaberite tip korisnika \n 1. Prodavac \n 2. Menadzer \n')
+        if usertype == '1':
+            type = 'salesman'
+            i = 1
+        elif usertype == '2':
+            type = 'manager'
+            i = 1
+        else:
+            print('Molim vas ponovite unos.')
+
+    newUser = User(username, password, ime, prezime, type, False)
+    if userRepo.add(newUser) == True:
+        print('Uspesno ste dodali korisnika.')
+
+def prikazsvihkorisnika():
+    userrepo = UserRepository()
+    format_linije = "{:20} {:20} {:20} {:20}"
+    print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
+    print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
+    n = 1
+    while n == 1:
+        print('Odaberite kriterijum sortiranja.')
+        print('1 --- po imenu.')
+        print('2 --- po prezimenu.')
+        print('3 --- po username-u.')
+        print('4 --- po tipu korisnika.')
+        print('0 --- za povratak nazad')
+        i = int(input())
+        users = userrepo.get_all_undeleted()
+        if i == 1:
+
+            print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
+            print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
+
+            users.sort(key=lambda x: x.first_name, reverse=False)
+
+            for user in users:
+                user.print()
+            print()
+
+        elif i == 2:
+
+            print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
+            print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
+
+            users.sort(key=lambda x: x.last_name, reverse=False)
+
+            for user in users:
+                user.print()
+            print()
+
+        elif i == 3:
+
+            print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
+            print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
+
+            users.sort(key=lambda x: x.username, reverse=False)
+
+            for user in users:
+                user.print()
+            print()
+
+        elif i == 4:
+
+            print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
+            print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
+
+            users.sort(key=lambda x: x.user_type, reverse=False)
+
+            for user in users:
+                user.print()
+            print()
+
+        elif i == 0:
+
+            return None
+
+def dodavanjeknjige():
+
+        ime = input('Unesite ime: ')
+        isbn = input('Unesite isbn: ')
+        autor = input('Unesite ime autora: ')
+        izdavac = input('Unesite ime izdavacke kuce: ')
+        broj_stranica = int(input('Unesite broj stranica: '))
+        godina_izdavanje = int(input('Unesite godinu izdavanja: '))
+        cena = int(input('Unesite cenu knjige: '))
+        zanr = input('Unesite zanr knjige: ')
+        code = ''
+
+        kontrolna = 1
+        bookRepo = BookRepository()
+        while kontrolna == 1:
+
+            code = input('Unesite sifru knjige: ')
+            book = bookRepo.get(code)
+
+            if book is None:
+                kontrolna = 0
+            else:
+                print('Ova knjiga vec postoji, molim Vas ponovite unos.')
+
+        knjiga = Book(code, ime, isbn, autor, izdavac, broj_stranica, godina_izdavanje, cena, zanr, False)
+        if bookRepo.add(knjiga) == True:
+            print('Uspesno ste uneli knjigu.')
+        else:
+            print('Neuspesno ste uneli knjigu')
+
+def izmenaknjige():
+    pass
+    # code =''
+    # bookrepo = BookRepository()
+    # kontrolna = 0
+    # while kontrolna == 0:
+    #     code = input('Unesite sifru')
+    #
+    #     oldBook = bookrepo.get(code)
+    #     if oldBook is not None:
+    #         kontrolna = 1
+    #
+    # novoIme = input('Unesite novo ime, ako zelite staro, kliknite enter')
+    # if novoIme=='':
+    #     novoIme = oldBook.name
+    # delSatus = False
+    # i = 0
+    # while i == 0:
+    #     usertype = input('Odaberite status knjige \n 1. Obrisana \n 2. Postojeca \n')
+    #     if usertype == '1':
+    #         oldBook.deleted = True
+    #         i = 1
+    #     elif usertype == '2':
+    #         oldBook.deleted = False
+    #         i = 1
+    #     else:
+    #         print('Molim vas ponovite unos.')
+    #
+    #
+    # novaKnjiga = Book(code, novoIme, noviIsbn,...., oldBook.deleted)
+    # if bookrepo.update(novaKnjiga) == True:
+    #     print('Uspesno ste update knjigu')
+    # else:
+    #     print("Neuspesno")
+
+
+
+def showMenuForAdmin(usertype):
     kontrolna = 42
     while kontrolna != 0:
         print("Odaberite opciju: ")
         print("1 --- prikaz svih knjiga.")
         print("2 --- pretraga knjiga.")
         print("3 --- prikaz svih akcija.")
-        print("4 --- pretraga akcija")
-
+        print("4 --- pretraga akcija.")
+        print("5 --- registacija korisnika.")
+        print("6 --- prikaz svih korisnika.")
+        print("7 --- dodavanje knjige.")
+        print("8 --- izmena knjige.")
         print("0 --- izlaz.")
+
         kontrolna = int(input())
         if kontrolna == 1:
-            prikazsvihknjiga()
+            prikazsvihknjiga(usertype)
         elif kontrolna == 2:
-            svepretrageKnjiga()
+            svepretrageKnjiga(usertype)
         elif kontrolna == 3:
             prikaziAkcije()
         elif kontrolna == 4:
             pretragaAkcija()
+        elif kontrolna == 5:
+            registracija()
+        elif kontrolna == 6:
+            prikazsvihkorisnika()
+        elif kontrolna == 7:
+            dodavanjeknjige()
+        elif kontrolna == 8:
+            izmenaknjige()
+        elif kontrolna == 0:
+            continue
+
+def showMenuForManager(usertype):
+    kontrolna = 42
+    while kontrolna != 0:
+        print("Odaberite opciju: ")
+        print("1 --- prikaz svih knjiga.")
+        print("2 --- pretraga knjiga.")
+        print("3 --- prikaz svih akcija.")
+        print("4 --- pretraga akcija.")
+        print("5 --- registacija korisnika.")
+        print("6 --- prikaz svih korisnika.")
+        print("0 --- izlaz.")
+
+        kontrolna = int(input())
+        if kontrolna == 1:
+            prikazsvihknjiga(usertype)
+        elif kontrolna == 2:
+            svepretrageKnjiga(usertype)
+        elif kontrolna == 3:
+            prikaziAkcije()
+        elif kontrolna == 4:
+            pretragaAkcija()
+        elif kontrolna == 5:
+            registracija()
+        elif kontrolna == 6:
+            prikazsvihkorisnika()
+        elif kontrolna == 0:
+            continue
+
+
+def showMenuForSalesman(usertype):
+    kontrolna = 42
+    while kontrolna != 0:
+        print("Odaberite opciju: ")
+        print("1 --- prikaz svih knjiga.")
+        print("2 --- pretraga knjiga.")
+        print("3 --- prikaz svih akcija.")
+        print("4 --- pretraga akcija.")
+        print("5 --- dodavanje knjige.")
+        print("6 --- izmena knjige.")
+        print("0 --- izlaz.")
+
+        kontrolna = int(input())
+        if kontrolna == 1:
+            prikazsvihknjiga(usertype)
+        elif kontrolna == 2:
+            svepretrageKnjiga(usertype)
+        elif kontrolna == 3:
+            prikaziAkcije()
+        elif kontrolna == 4:
+            pretragaAkcija()
+        elif kontrolna == 5:
+            dodavanjeknjige()
+        elif kontrolna == 6:
+            izmenaknjige()
         elif kontrolna == 0:
             continue
 
@@ -481,12 +916,12 @@ def test():
         return
     else:
         if user.user_type == "administrator":
-            showMenuForAdmin()
+            showMenuForAdmin(user.user_type)
         elif user.user_type == "manager":
-            print('Ja sam Menadzer')
+            showMenuForManager(user.user_type)
         else:
             if user.user_type == "salesman":
-                print('Ja sam prodavac')
+                showMenuForSalesman(user.user_type)
 
 
 def seedUsers():

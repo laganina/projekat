@@ -24,3 +24,8 @@ class User:
             "{:>10}: {}".format("Tip korisnika", self.user_type),
             "{:>15}: {}".format("Da li je korisnik obrisan: ", self.deleted)
         ])
+
+    def print(self):
+        format_linije = "{:20} {:20} {:20} {:20}"
+        print()
+        print(format_linije.format(self.first_name, self.last_name, self.username, self.user_type))
