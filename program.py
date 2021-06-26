@@ -39,19 +39,19 @@ def prikazsvihknjiga(usertype):
     format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
     format_linije1 = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20} {:8}"
 
-
-    if usertype=="administrator":
-        print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr", "Brisano"))
+    if usertype == "administrator":
+        print(format_linije1.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr",
+                                    "Brisano"))
         print(
             format_linije1.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
-                                 "-" * 20, "-"*8))
+                                  "-" * 20, "-" * 8))
         for book in bookrepo.books:
             book.printdeleted()
     else:
         print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Cena", "Zanr"))
         print(
             format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
-                                  "-" * 20))
+                                 "-" * 20))
         for book in bookrepo.get_all_undeleted():
             book.print()
     print()
@@ -351,7 +351,6 @@ def svepretrageKnjiga(usertype):
                                           "-" * 10,
                                           "-" * 20, "-" * 8))
 
-
                 for book in searched:
                     book.print()
             else:
@@ -367,7 +366,6 @@ def svepretrageKnjiga(usertype):
 
                 for book in searched:
                     book.print()
-
 
             print()
         elif i == 5:
@@ -400,9 +398,6 @@ def svepretrageKnjiga(usertype):
                 for book in searched:
                     book.print()
 
-
-
-
             print()
         elif i == 6:
             min = int(input('Unesite minimalnu cenu za pretragu. \n'))
@@ -434,7 +429,6 @@ def svepretrageKnjiga(usertype):
 
                 for book in searched:
                     book.print()
-
 
             print()
         else:
@@ -616,8 +610,9 @@ def prikaziAkcije():
 
                 for code in offer.books_and_prices.keys():
                     book = bookRepo.get_undeleted(code)
-                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher, book.page_number,
-                                               book.year, offer.books_and_prices[code], book.genre))
+                    print(
+                        format_linije.format(code, book.name, book.isbn, book.author, book.publisher, book.page_number,
+                                             book.year, offer.books_and_prices[code], book.genre))
 
                 print("-" * 120)
 
@@ -647,12 +642,14 @@ def prikaziAkcije():
 
                 for code in offer.books_and_prices.keys():
                     book = bookRepo.get_undeleted(code)
-                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher, book.page_number,
-                                               book.year, offer.books_and_prices[code], book.genre))
+                    print(
+                        format_linije.format(code, book.name, book.isbn, book.author, book.publisher, book.page_number,
+                                             book.year, offer.books_and_prices[code], book.genre))
 
                 print("-" * 120)
     else:
         return None
+
 
 def registracija():
     ime = input('Unesite ime: ')
@@ -665,7 +662,7 @@ def registracija():
         username = input('Unesite username: ')
         user = userRepo.get_undeleted(username)
 
-        if user is  None:
+        if user is None:
             kontrolna = 0
         else:
             print('Ovaj username vec postoji, molim Vas ponovite unos.')
@@ -687,6 +684,7 @@ def registracija():
     newUser = User(username, password, ime, prezime, type, False)
     if userRepo.add(newUser) == True:
         print('Uspesno ste dodali korisnika.')
+
 
 def prikazsvihkorisnika():
     userrepo = UserRepository()
@@ -751,71 +749,132 @@ def prikazsvihkorisnika():
 
             return None
 
+
 def dodavanjeknjige():
+    ime = input('Unesite ime: ')
+    isbn = input('Unesite isbn: ')
+    autor = input('Unesite ime autora: ')
+    izdavac = input('Unesite ime izdavacke kuce: ')
+    broj_stranica = int(input('Unesite broj stranica: '))
+    godina_izdavanje = int(input('Unesite godinu izdavanja: '))
+    cena = int(input('Unesite cenu knjige: '))
+    zanr = input('Unesite zanr knjige: ')
+    code = ''
 
-        ime = input('Unesite ime: ')
-        isbn = input('Unesite isbn: ')
-        autor = input('Unesite ime autora: ')
-        izdavac = input('Unesite ime izdavacke kuce: ')
-        broj_stranica = int(input('Unesite broj stranica: '))
-        godina_izdavanje = int(input('Unesite godinu izdavanja: '))
-        cena = int(input('Unesite cenu knjige: '))
-        zanr = input('Unesite zanr knjige: ')
-        code = ''
+    kontrolna = 1
+    bookRepo = BookRepository()
+    while kontrolna == 1:
 
-        kontrolna = 1
-        bookRepo = BookRepository()
-        while kontrolna == 1:
+        code = input('Unesite sifru knjige: ')
+        book = bookRepo.get(code)
 
-            code = input('Unesite sifru knjige: ')
-            book = bookRepo.get(code)
-
-            if book is None:
-                kontrolna = 0
-            else:
-                print('Ova knjiga vec postoji, molim Vas ponovite unos.')
-
-        knjiga = Book(code, ime, isbn, autor, izdavac, broj_stranica, godina_izdavanje, cena, zanr, False)
-        if bookRepo.add(knjiga) == True:
-            print('Uspesno ste uneli knjigu.')
+        if book is None:
+            kontrolna = 0
         else:
-            print('Neuspesno ste uneli knjigu')
+            print('Ova knjiga vec postoji, molim Vas ponovite unos.')
+
+    knjiga = Book(code, ime, isbn, autor, izdavac, broj_stranica, godina_izdavanje, cena, zanr, False)
+    if bookRepo.add(knjiga) == True:
+        print('Uspesno ste uneli knjigu.')
+    else:
+        print('Neuspesno ste uneli knjigu')
+
 
 def izmenaknjige():
-    pass
-    # code =''
-    # bookrepo = BookRepository()
-    # kontrolna = 0
-    # while kontrolna == 0:
-    #     code = input('Unesite sifru')
-    #
-    #     oldBook = bookrepo.get(code)
-    #     if oldBook is not None:
-    #         kontrolna = 1
-    #
-    # novoIme = input('Unesite novo ime, ako zelite staro, kliknite enter')
-    # if novoIme=='':
-    #     novoIme = oldBook.name
-    # delSatus = False
-    # i = 0
-    # while i == 0:
-    #     usertype = input('Odaberite status knjige \n 1. Obrisana \n 2. Postojeca \n')
-    #     if usertype == '1':
-    #         oldBook.deleted = True
-    #         i = 1
-    #     elif usertype == '2':
-    #         oldBook.deleted = False
-    #         i = 1
-    #     else:
-    #         print('Molim vas ponovite unos.')
-    #
-    #
-    # novaKnjiga = Book(code, novoIme, noviIsbn,...., oldBook.deleted)
-    # if bookrepo.update(novaKnjiga) == True:
-    #     print('Uspesno ste update knjigu')
-    # else:
-    #     print("Neuspesno")
+    code = ''
+    bookrepo = BookRepository()
+    kontrolna = 0
+    oldBook = None
 
+    while kontrolna == 0:
+        code = input('Unesite sifru knjige. \n')
+
+        oldBook = bookrepo.get(code)
+        if oldBook is not None:
+            kontrolna = 1
+
+    novoIme = input('Unesite novo ime, ako zelite staro kliknite enter. \n')
+    if novoIme == '':
+        novoIme = oldBook.name
+
+    noviIsbn = input('Unesite novi isbn, ako zelite stari kliknite enter. \n')
+    if noviIsbn == '':
+        noviIsbn = oldBook.isbn
+
+    noviAutor = input('Unesite novo ime autora, ako zelite staro kliknite enter. \n')
+    if noviAutor == '':
+        noviAutor = oldBook.author
+
+    noviIzdavac = input('Unesite novo ime izdavaca, ako zelite staro kliknite enter.\n')
+    if noviIzdavac == '':
+        noviIzdavac = oldBook.publisher
+
+    noviBr = input('Unesite novi broj stranica, ako zelite stari kliknite enter. \n')
+    if noviBr == '':
+        noviBr = oldBook.page_number
+    else:
+        noviBr = int(noviBr)
+
+    novaGod = input('Unesite novu godinu izdanja, ako zelite staru kliknite enter. \n')
+    if novaGod == '':
+        novaGod = oldBook.year
+    else:
+        novaGod = int(novaGod)
+
+    novaCena = input('Unesite novu cenu, ako zelite staru kliknite enter. \n')
+    if novaCena == '':
+        novaCena = oldBook.price
+    else:
+        novaCena = int(novaCena)
+
+    noviZanr = input('Unesite novi zanr knjige, ako zelite stari kliknite enter. \n')
+    if noviZanr == '':
+        noviZanr = oldBook.genre
+
+    i = 0
+    while i == 0:
+        delStatus = input('Odaberite status knjige \n 1. Obrisana \n 2. Postojeca \n')
+        if delStatus == '1':
+            oldBook.deleted = True
+            i = 1
+        elif delStatus == '2':
+            oldBook.deleted = False
+            i = 1
+        else:
+            print('Molim vas ponovite unos.')
+
+    novaKnjiga = Book(code, novoIme, noviIsbn, noviAutor, noviIzdavac, noviBr, novaGod, novaCena, noviZanr,
+                      oldBook.deleted)
+
+    if bookrepo.update(novaKnjiga) == True:
+        print('Uspesno ste update-ovali knjigu.')
+    else:
+        print('Neuspesno ste update-ovali knjigu.')
+
+def brisanjeknjige():
+    code = ''
+    bookrepo = BookRepository()
+    kontrolna = 0
+    oldBook = None
+
+    while kontrolna == 0:
+        code = input('Unesite sifru knjige. \n')
+
+        oldBook = bookrepo.get(code)
+        if oldBook is not None:
+            kontrolna = 1
+
+    delStatus = input('Ako zelite da obrisete knjigu, kliknite enter. \n Ako ne zelite da obrisete knjigu, pritisnite bilo koji karakter na tastaturi. \n')
+    if delStatus == '':
+        oldBook.deleted = True
+
+    novaKnjiga = Book(code, oldBook.name, oldBook.isbn, oldBook.author, oldBook.publisher, oldBook.page_number, oldBook.year, oldBook.price, oldBook.genre,
+                      oldBook.deleted)
+
+    if bookrepo.update(novaKnjiga) == True:
+        print('Uspesno ste obrisali knjigu.')
+    else:
+        print('Neuspesno ste obrisali knjigu.')
 
 
 def showMenuForAdmin(usertype):
@@ -830,6 +889,7 @@ def showMenuForAdmin(usertype):
         print("6 --- prikaz svih korisnika.")
         print("7 --- dodavanje knjige.")
         print("8 --- izmena knjige.")
+        print("9 --- brisanje knjige.")
         print("0 --- izlaz.")
 
         kontrolna = int(input())
@@ -849,8 +909,11 @@ def showMenuForAdmin(usertype):
             dodavanjeknjige()
         elif kontrolna == 8:
             izmenaknjige()
+        elif kontrolna == 9:
+            brisanjeknjige()
         elif kontrolna == 0:
             continue
+
 
 def showMenuForManager(usertype):
     kontrolna = 42
@@ -891,6 +954,7 @@ def showMenuForSalesman(usertype):
         print("4 --- pretraga akcija.")
         print("5 --- dodavanje knjige.")
         print("6 --- izmena knjige.")
+        print("7 --- brisanje knjige.")
         print("0 --- izlaz.")
 
         kontrolna = int(input())
@@ -906,6 +970,8 @@ def showMenuForSalesman(usertype):
             dodavanjeknjige()
         elif kontrolna == 6:
             izmenaknjige()
+        elif kontrolna == 7:
+            brisanjeknjige()
         elif kontrolna == 0:
             continue
 
