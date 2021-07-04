@@ -1,8 +1,13 @@
 from Model.Book import Book
 from Model.User import User
+from Model.Receipt import Receipt
+import random
+import string
 from Repository.BookRepository import BookRepository
 from Repository.UserRepository import UserRepository
 from Repository.SpecialOfferRepository import SpecialOfferRepository
+from Repository.RecieptRepository import RecieptRepository
+
 from Model.SpecialOffer import SpecialOffer
 import datetime
 
@@ -942,9 +947,149 @@ def showMenuForManager(usertype):
             prikazsvihkorisnika()
         elif kontrolna == 0:
             continue
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+
+    return result_str
+
+def prodajaknjiga(cashier):
+    books = {}
+    s_offer_books = {}
+
+    specialOfferRepo = SpecialOfferRepository()
+    offers = specialOfferRepo.get_all_undeleted()
+    bookRepo = BookRepository()
+    receiptRepo = RecieptRepository()
+
+    kontrolna = 1312
+    while kontrolna != 0:
+        print('Ako zelite da dodate knjigu u korpu upisivanjem njene sifre, zajedno sa kolicinom zeljene knjige, pritisnite broj 1.')
+        print('Ako zelite da odabere akciju, pritisnite broj 2.')
+        print('Ukoliko zelite da vidite trenutnu korpu, kliknite broj 3')
+        print('Ukoliko zelite da potvrdite kupovinu, kliknite broj 4')
+        print('Ako zelite da otkazete kupovinu, pritisnite broj 0.')
+        kontrolna = int(input())
+
+        if kontrolna == 1:
+            i =  7
+            while i != 0:
+                print('Unesite sifru knjige i kolicinu zeljenu odvojeno zarezom.')
+                print('Ukoliko je zadovoljena kolicina knjiga, pritisnite broj 0')
+                code_book = input()
+                if code_book == '0':
+                    i = 0
+                else:
+                    strings = code_book.split(',')
+                    code = strings[0].strip()
+                    number = int(strings[1].strip())
+                    if books.get(code) is None:
+                        books[code] = [number, bookRepo.get_undeleted(code).price]
+                    else:
+                        oldnumber = books.get(code)
+                        newnumber = oldnumber[0] + number
+                        if bookRepo.get_undeleted(code) is not None:
+                            books[code] = [newnumber, bookRepo.get_undeleted(code).price]
+                        else:
+                            print('Uneli ste sifru nepostojece knjige.')
+        elif kontrolna == 2:
+            i = 1
+
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
+
+            for offer in offers:
+                print("Kod: ", offer.code)
+                print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                print(
+                    format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
+                                         "Akc. Cena", "Zanr"))
+                print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                           "-" * 10,
+                                           "-" * 20))
+
+                for code in offer.books_and_prices.keys():
+                    book = bookRepo.get_undeleted(code)
+                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                               book.page_number,
+                                               book.year, offer.books_and_prices[code], book.genre))
+
+                print("-" * 120)
+                print()
+                print()
 
 
-def showMenuForSalesman(usertype):
+
+
+            while i != 0:
+                print('Unesite sifru akcije.')
+                print('Ukoliko zelite da izadjete pritisnite broj 0.')
+                s_offer = input()
+                if s_offer == '0':
+                    i = 0
+                else:
+                    if specialOfferRepo.get_undeleted(s_offer) is not None:
+                        offer = specialOfferRepo.get_undeleted(s_offer)
+                        for code in offer.books_and_prices.keys():
+                            if s_offer_books.get(code) is None:
+                                s_offer_books[code] = [1, offer.books_and_prices[code]]
+                            else:
+                                oldnumber = s_offer_books.get(code)
+                                newnumber = oldnumber[0] + 1
+                                s_offer_books[code] = [newnumber, offer.books_and_prices[code]]
+
+
+                    else:
+                        print('Uneli ste sifru nepostojece akcije.')
+        elif kontrolna==3:
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:10} {:20}"
+            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
+                                       "Cena", "Kolicina", "Zanr"))
+            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                       "-" * 10,
+                                       "-" * 10,
+                                       "-" * 20))
+            if len(s_offer_books)!=0:
+                for code in s_offer_books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                               book.page_number,
+                                               book.year,s_offer_books[code][1], s_offer_books[code][0], book.genre))
+
+            if len(books):
+                for code in books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                               book.page_number,
+                                               book.year, books[code][1], books[code][0], book.genre))
+
+            now= datetime.datetime.today().strftime("%d/%m/%Y")
+            r = Receipt(get_random_string(5), cashier, str(now)
+                            , books, s_offer_books, False)
+
+            print('Ukupna cena je: ' +str(r.full_price))
+
+        elif kontrolna==4:
+            now = datetime.datetime.today().strftime("%d/%m/%Y")
+            r = Receipt(get_random_string(5), cashier, str(now), books, s_offer_books, False)
+            print(str(r))
+            if receiptRepo.add(r):
+                print('Uspesno ste prodali knjige')
+                return
+        else:
+            kontrolna = 0
+
+
+
+
+
+
+
+
+
+
+
+def showMenuForSalesman(usertype,cashier):
     kontrolna = 42
     while kontrolna != 0:
         print("Odaberite opciju: ")
@@ -955,6 +1100,7 @@ def showMenuForSalesman(usertype):
         print("5 --- dodavanje knjige.")
         print("6 --- izmena knjige.")
         print("7 --- brisanje knjige.")
+        print("8 --- prodaja knjiga.")
         print("0 --- izlaz.")
 
         kontrolna = int(input())
@@ -972,6 +1118,8 @@ def showMenuForSalesman(usertype):
             izmenaknjige()
         elif kontrolna == 7:
             brisanjeknjige()
+        elif kontrolna == 8:
+            prodajaknjiga(cashier)
         elif kontrolna == 0:
             continue
 
@@ -987,7 +1135,7 @@ def test():
             showMenuForManager(user.user_type)
         else:
             if user.user_type == "salesman":
-                showMenuForSalesman(user.user_type)
+                showMenuForSalesman(user.user_type, user.username)
 
 
 def seedUsers():
