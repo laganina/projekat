@@ -57,7 +57,7 @@ def prikazsvihknjiga(usertype):
         print(
             format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
                                  "-" * 20))
-        for book in bookrepo.get_all_undeleted():
+        for book in bookrepo.get_all_undeleted_and_valid():
             book.print()
     print()
     i = 666
@@ -70,7 +70,7 @@ def prikazsvihknjiga(usertype):
         print('5 --- po ceni.')
         print('0 --- povratak na prethodni meni.')
         i = int(input())
-        books = bookrepo.get_all_undeleted()
+        books = bookrepo.get_all_undeleted_and_valid()
         booksdel = bookrepo.books
 
         if i == 1:
@@ -232,7 +232,7 @@ def isinpricerange(min, max, price):
 
 def svepretrageKnjiga(usertype):
     bookrepo = BookRepository()
-    books = bookrepo.get_all_undeleted()
+    books = bookrepo.get_all_undeleted_and_valid()
     format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
     format_linije1 = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20} {:8}"
 
@@ -442,7 +442,7 @@ def svepretrageKnjiga(usertype):
 
 def pretragaAkcija():
     specialOfferRepo = SpecialOfferRepository()
-    offers = specialOfferRepo.get_all_undeleted()
+    offers = specialOfferRepo.get_all_undeleted_and_valid()
     bookRepo = BookRepository()
 
     format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
@@ -558,14 +558,14 @@ def pretragaAkcija():
 
 def prikaziAkcije():
     specialOfferRepo = SpecialOfferRepository()
-    offers = specialOfferRepo.get_all_undeleted()
+    offers = specialOfferRepo.get_all_undeleted_and_valid()
     bookRepo = BookRepository()
 
     format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
 
     for offer in offers:
         print("Kod: ", offer.code)
-        print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+        print("Akcija vazi do:", offer.datetime)
         print(
             format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Akc. Cena", "Zanr"))
         print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
@@ -588,7 +588,7 @@ def prikaziAkcije():
         print('0 --- povratak na prethodni meni.')
         i = int(input())
         specialOfferRepo = SpecialOfferRepository()
-        offers = specialOfferRepo.get_all_undeleted()
+        offers = specialOfferRepo.get_all_undeleted_and_valid()
         bookRepo = BookRepository()
 
         if i == 1:
@@ -605,7 +605,7 @@ def prikaziAkcije():
             for offer in offers:
                 print("Code: ", offer.code)
 
-                print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                print("Akcija vazi do:", offer.datetime)
                 print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Akc. Cena",
                                            "Zanr"))
                 print(
@@ -637,7 +637,7 @@ def prikaziAkcije():
             for offer in offers:
                 print("Code: ", offer.code)
 
-                print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                print("Akcija vazi do:", offer.datetime)
                 print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Akc. Cena",
                                            "Zanr"))
                 print(
@@ -705,7 +705,7 @@ def prikazsvihkorisnika():
         print('4 --- po tipu korisnika.')
         print('0 --- za povratak nazad')
         i = int(input())
-        users = userrepo.get_all_undeleted()
+        users = userrepo.get_all_undeleted_and_valid()
         if i == 1:
 
             print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
@@ -919,7 +919,210 @@ def showMenuForAdmin(usertype):
         elif kontrolna == 0:
             continue
 
+def dodavanjeakcije():
+    offerRepo = SpecialOfferRepository()
+    bookRepo = BookRepository()
+    current_max_code = offerRepo.get_max_code()
+    print(current_max_code)
+    new_code = str(current_max_code + 1)
+    new_date = input("Molim Vas unesite datum trajanja akcije u formatu dd/mm/yyyy. \n")
+    new_booksandprices = {}
+    print("Sada cete unositi knjige i akcijske cene.")
+    print("Za izlaz unesite prazan string.")
+    while True:
+        new_book = input("Unesite sifru knjige.\n")
+        if new_book == '':
+            break
+        new_price = int(input("Unesite novu cenu knjige.\n"))
+        if bookRepo.get_undeleted(new_book) is not None:
+            new_booksandprices[new_book] = new_price
+    enter = input('Za potvrdu dodavanja akcije kliknite enter')
+    if enter =='':
+        offer = SpecialOffer(new_code, new_booksandprices, new_date, False)
+        if offerRepo.add(offer):
+            print("Uspesno ste dodali novu akciju.")
+        else:
+            print("Neuspesno ste dodali novu akciju.")
+def izvestaji():
+    bookRepo = BookRepository()
+    recieptRepo = RecieptRepository()
+    while True:
+        print('Izaberite izvestaj:')
+        print('1 --- Ukupna prodaja svih knjiga')
+        print('2 --- Ukupna prodaja svih akcija')
+        print('3 --- Ukupna prodaja svih knjiga odabranog autora')
+        print('4 --- Ukupna prodaja svih knjiga odabranog izdavača')
+        print('5 --- Ukupna prodaja svih knjiga odabranog zanra')
 
+        print('0 --- izlaz')
+
+        i = int(input())
+        if i==0:
+            break
+        elif i==1:
+            receipts = recieptRepo.get_all_undeleted()
+            sold_books={}
+            for r in receipts:
+                for sold_book in r.books.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.books[sold_book][0],r.books[sold_book][0]*r.books[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.books[sold_book][0]*r.books[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0]+r.books[sold_book][0], newVal]
+                for sold_book in r.s_offers.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.s_offers[sold_book][0], r.s_offers[sold_book][0]*r.s_offers[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.s_offers[sold_book][0]*r.s_offers[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.s_offers[sold_book][0], newVal]
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:20} {:10} {:10}"
+            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd","Zanr",
+                                       "Zarada", "Prod.Kol"))
+            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                       "-" * 20,
+                                       "-" * 10,
+                                       "-" * 10))
+            if len(sold_books) != 0:
+                for code in sold_books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                               book.page_number,
+                                               book.year, book.genre, sold_books[code][1], sold_books[code][0]))
+
+
+        elif i==2:
+            receipts = recieptRepo.get_all_undeleted()
+            sold_books = {}
+            for r in receipts:
+                for sold_book in r.s_offers.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.s_offers[sold_book][0],
+                                                 r.s_offers[sold_book][0] * r.s_offers[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.s_offers[sold_book][0] * r.s_offers[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.s_offers[sold_book][0], newVal]
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:20} {:10} {:10}"
+            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Zanr",
+                                       "Zarada", "Prod.Kol"))
+            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                       "-" * 20,
+                                       "-" * 10,
+                                       "-" * 10))
+            if len(sold_books) != 0:
+                for code in sold_books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                               book.page_number,
+                                               book.year, book.genre, sold_books[code][1], sold_books[code][0]))
+
+        elif i==3:
+            autor= input('Unesite ime zeljenog autora za pretragu\n')
+            autor = autor.strip()
+            receipts = recieptRepo.get_all_undeleted()
+            sold_books = {}
+            for r in receipts:
+                for sold_book in r.books.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.books[sold_book][0], r.books[sold_book][0] * r.books[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.books[sold_book][0] * r.books[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.books[sold_book][0], newVal]
+                for sold_book in r.s_offers.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.s_offers[sold_book][0],
+                                                 r.s_offers[sold_book][0] * r.s_offers[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.s_offers[sold_book][0] * r.s_offers[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.s_offers[sold_book][0], newVal]
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:20} {:10} {:10}"
+            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Zanr",
+                                       "Zarada", "Prod.Kol"))
+            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                       "-" * 20,
+                                       "-" * 10,
+                                       "-" * 10))
+            if len(sold_books) != 0:
+                for code in sold_books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    if(book.author.lower()==autor.lower()):
+                        print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                                   book.page_number,
+                                                   book.year, book.genre, sold_books[code][1], sold_books[code][0]))
+        elif i==4:
+            izdavac = input('Unesite ime zeljenog izdavaca za pretragu\n')
+            izdavac = izdavac.strip()
+            receipts = recieptRepo.get_all_undeleted()
+            sold_books = {}
+            for r in receipts:
+                for sold_book in r.books.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.books[sold_book][0], r.books[sold_book][0] * r.books[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.books[sold_book][0] * r.books[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.books[sold_book][0], newVal]
+                for sold_book in r.s_offers.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.s_offers[sold_book][0],
+                                                 r.s_offers[sold_book][0] * r.s_offers[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.s_offers[sold_book][0] * r.s_offers[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.s_offers[sold_book][0], newVal]
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:20} {:10} {:10}"
+            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Zanr",
+                                       "Zarada", "Prod.Kol"))
+            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                       "-" * 20,
+                                       "-" * 10,
+                                       "-" * 10))
+            if len(sold_books) != 0:
+                for code in sold_books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    if (book.publisher.lower() == izdavac.lower()):
+                        print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                                   book.page_number,
+                                                   book.year, book.genre, sold_books[code][1], sold_books[code][0]))
+        elif i==5:
+            zanr = input('Unesite ime zeljenog zanra za pretragu\n')
+            zanr = zanr.strip()
+            receipts = recieptRepo.get_all_undeleted()
+            sold_books = {}
+            for r in receipts:
+                for sold_book in r.books.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.books[sold_book][0], r.books[sold_book][0] * r.books[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.books[sold_book][0] * r.books[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.books[sold_book][0], newVal]
+                for sold_book in r.s_offers.keys():
+                    if sold_books.get(sold_book) is None:
+                        sold_books[sold_book] = [r.s_offers[sold_book][0],
+                                                 r.s_offers[sold_book][0] * r.s_offers[sold_book][1]]
+                    else:
+                        oldVal = sold_books.get(sold_book)
+                        newVal = oldVal[1] + r.s_offers[sold_book][0] * r.s_offers[sold_book][1]
+                        sold_books[sold_book] = [oldVal[0] + r.s_offers[sold_book][0], newVal]
+            format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:20} {:10} {:10}"
+            print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd", "Zanr",
+                                       "Zarada", "Prod.Kol"))
+            print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
+                                       "-" * 20,
+                                       "-" * 10,
+                                       "-" * 10))
+            if len(sold_books) != 0:
+                for code in sold_books.keys():
+                    book = bookRepo.get_undeleted(code)
+                    if (book.genre.lower() == zanr.lower()):
+                        print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
+                                                   book.page_number,
+                                                   book.year, book.genre, sold_books[code][1], sold_books[code][0]))
 def showMenuForManager(usertype):
     kontrolna = 42
     while kontrolna != 0:
@@ -930,6 +1133,8 @@ def showMenuForManager(usertype):
         print("4 --- pretraga akcija.")
         print("5 --- registacija korisnika.")
         print("6 --- prikaz svih korisnika.")
+        print("7 --- dodavanje akcije.")
+        print("8 --- izvestaji")
         print("0 --- izlaz.")
 
         kontrolna = int(input())
@@ -945,6 +1150,10 @@ def showMenuForManager(usertype):
             registracija()
         elif kontrolna == 6:
             prikazsvihkorisnika()
+        elif kontrolna == 7:
+            dodavanjeakcije()
+        elif kontrolna ==8:
+            izvestaji()
         elif kontrolna == 0:
             continue
 def get_random_string(length):
@@ -959,7 +1168,7 @@ def prodajaknjiga(cashier):
     s_offer_books = {}
 
     specialOfferRepo = SpecialOfferRepository()
-    offers = specialOfferRepo.get_all_undeleted()
+    offers = specialOfferRepo.get_all_undeleted_and_valid()
     bookRepo = BookRepository()
     receiptRepo = RecieptRepository()
 

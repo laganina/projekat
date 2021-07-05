@@ -20,7 +20,7 @@ class SpecialOfferRepository:
                         for u in lista:
                             offer = json.loads(u, object_hook=lambda d: SimpleNamespace(**d))
                             self.offers.append(
-                                SpecialOffer(offer.code, offer.books_and_prices.__dict__,  datetime.strptime(offer.datetime, '%d/%m/%Y'), offer.deleted))
+                                SpecialOffer(offer.code, offer.books_and_prices.__dict__,  offer.datetime, offer.deleted))
 
     def get(self, code):
         for offer in self.offers:
@@ -28,16 +28,18 @@ class SpecialOfferRepository:
                 return offer
         return None
 
-    def get_all_undeleted(self):
+    def get_all_undeleted_and_valid(self):
         undeleted_offers = []
+        today = datetime.today().strftime("%d/%m/%Y")
+        today_date = datetime.strptime(today, "%d/%m/%Y")
         for offer in self.offers:
-            if offer.deleted == False:
+            offer_date = datetime.strptime(offer.datetime, "%d/%m/%Y")
+            if offer.deleted == False and offer_date>=today_date:
                 undeleted_offers.append(offer)
-
         return undeleted_offers
 
     def get_undeleted(self, code):
-        for offer in self.get_all_undeleted():
+        for offer in self.get_all_undeleted_and_valid():
             if offer.code == code:
                 return offer
         return None
@@ -76,3 +78,12 @@ class SpecialOfferRepository:
 
         else:
             return False
+
+    def get_max_code(self):
+        max_code = self.get_all_undeleted_and_valid()[0].code
+        for offer in self.get_all_undeleted_and_valid():
+            if int(offer.code) >= int(max_code):
+                max_code = offer.code
+        return int(max_code)
+
+
