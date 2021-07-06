@@ -57,7 +57,7 @@ def prikazsvihknjiga(usertype):
         print(
             format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
                                  "-" * 20))
-        for book in bookrepo.get_all_undeleted_and_valid():
+        for book in bookrepo.get_all_undeleted():
             book.print()
     print()
     i = 666
@@ -70,7 +70,7 @@ def prikazsvihknjiga(usertype):
         print('5 --- po ceni.')
         print('0 --- povratak na prethodni meni.')
         i = int(input())
-        books = bookrepo.get_all_undeleted_and_valid()
+        books = bookrepo.get_all_undeleted()
         booksdel = bookrepo.books
 
         if i == 1:
@@ -204,8 +204,6 @@ def prikazsvihknjiga(usertype):
             return None
 
 
-# code=code1
-# codesubstr= Od od
 def containsCode(code, codesubstr):
     return codesubstr.lower() in code.lower()
 
@@ -232,7 +230,7 @@ def isinpricerange(min, max, price):
 
 def svepretrageKnjiga(usertype):
     bookrepo = BookRepository()
-    books = bookrepo.get_all_undeleted_and_valid()
+    books = bookrepo.get_all_undeleted()
     format_linije = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20}"
     format_linije1 = "{:10} {:20} {:10} {:20} {:20} {:10} {:10} {:10} {:20} {:8}"
 
@@ -694,8 +692,8 @@ def registracija():
 def prikazsvihkorisnika():
     userrepo = UserRepository()
     format_linije = "{:20} {:20} {:20} {:20}"
-    print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
-    print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
+    # print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
+    # print(format_linije.format("-" * 20, "-" * 20, "-" * 20, "-" * 20))
     n = 1
     while n == 1:
         print('Odaberite kriterijum sortiranja.')
@@ -705,7 +703,7 @@ def prikazsvihkorisnika():
         print('4 --- po tipu korisnika.')
         print('0 --- za povratak nazad')
         i = int(input())
-        users = userrepo.get_all_undeleted_and_valid()
+        users = userrepo.get_all_undeleted()
         if i == 1:
 
             print(format_linije.format("Ime", "Prezime", "Username", "Tip korisnika"))
