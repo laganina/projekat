@@ -261,7 +261,7 @@ def svepretrageKnjiga(usertype):
                                           "-" * 20, "-" * 8))
 
                 for book in searched:
-                    book.print()
+                    book.printdeleted()
             else:
                 searched = []
                 for book in books:
@@ -293,7 +293,7 @@ def svepretrageKnjiga(usertype):
                                           "-" * 20, "-" * 8))
 
                 for book in searched:
-                    book.print()
+                    book.printdeleted()
             else:
                 searched = []
                 for book in books:
@@ -323,7 +323,7 @@ def svepretrageKnjiga(usertype):
                                           "-" * 10,
                                           "-" * 20, "-" * 8))
                 for book in searched:
-                    book.print()
+                    book.printdeleted()
             else:
                 searched = []
                 for book in books:
@@ -355,7 +355,7 @@ def svepretrageKnjiga(usertype):
                                           "-" * 20, "-" * 8))
 
                 for book in searched:
-                    book.print()
+                    book.printdeleted()
             else:
                 searched = []
                 for book in books:
@@ -386,7 +386,7 @@ def svepretrageKnjiga(usertype):
                                           "-" * 10,
                                           "-" * 20, "-" * 8))
                 for book in searched:
-                    book.print()
+                    book.printdeleted()
             else:
                 searched = []
                 for book in books:
@@ -418,7 +418,7 @@ def svepretrageKnjiga(usertype):
                                           "-" * 10,
                                           "-" * 20, "-" * 8))
                 for book in searched:
-                    book.print()
+                    book.printdeleted()
             else:
                 searched = []
                 for book in books:
@@ -592,13 +592,17 @@ def prikaziAkcije():
         if i == 1:
             print('Odaberite rastuce/opadajuce.')
             print('1 --- rastuce.')
-            print('bilo sta --- opadajuce.')
+            print('2 --- opadajuce.')
+            print('0 --- povratak na prethodni meni.')
             l = int(input())
             if l == 1:
                 offers.sort(key=lambda x: x.code, reverse=False)
 
-            else:
+            elif l == 2:
                 offers.sort(key=lambda x: x.code, reverse=True)
+
+            elif l == 0:
+                return None
 
             for offer in offers:
                 print("Code: ", offer.code)
@@ -624,13 +628,17 @@ def prikaziAkcije():
 
             print('Odaberite rastuce/opadajuce.')
             print('1 --- rastuce.')
-            print('bilo sta --- opadajuce.')
+            print('2 --- opadajuce.')
+            print('0 --- povratak nazad.')
             l = int(input())
             if l == 1:
                 offers.sort(key=lambda x: x.datetime, reverse=False)
 
-            else:
+            elif l == 2:
                 offers.sort(key=lambda x: x.datetime, reverse=True)
+
+            elif l == 0:
+                return None
 
             for offer in offers:
                 print("Code: ", offer.code)
@@ -865,7 +873,12 @@ def brisanjeknjige():
 
         oldBook = bookrepo.get(code)
         if oldBook is not None:
+            if oldBook.deleted:
+                print('Ova knjiga je vec obrisana')
+                return
             kontrolna = 1
+        else:
+            print('Uneli ste nepostojecu sifru. Pokusajte opet.')
 
     delStatus = input('Ako zelite da obrisete knjigu, kliknite enter. \n Ako ne zelite da obrisete knjigu, pritisnite bilo koji karakter na tastaturi. \n')
     if delStatus == '':
