@@ -200,7 +200,7 @@ def prikazsvihknjiga(usertype):
                 for book in books:
                     book.print()
 
-        else:
+        elif i == 0:
             return None
 
 
@@ -434,7 +434,7 @@ def svepretrageKnjiga(usertype):
                     book.print()
 
             print()
-        else:
+        elif i == 0:
             return None
 
 
@@ -460,7 +460,7 @@ def pretragaAkcija():
 
                 if len(searched) > 0:
                     print("Code: ", offer.code)
-                    print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                    print("Akcija vazi do:", offer.datetime)
                     print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
                                                "Akc. Cena", "Zanr"))
                     print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 20, "-" * 10, "-" * 10,
@@ -485,7 +485,7 @@ def pretragaAkcija():
                             containsName(bookRepo.get_undeleted(x).name, naslov)]
                 if len(searched) > 0:
                     print("Code: ", offer.code)
-                    print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                    print("Akcija vazi do:", offer.datetime)
                     print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
                                                "Akc. Cena", "Zanr"))
                     print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
@@ -509,7 +509,7 @@ def pretragaAkcija():
                             containsAuthor(bookRepo.get_undeleted(x).author, autor)]
                 if len(searched) > 0:
                     print("Code: ", offer.code)
-                    print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                    print("Akcija vazi do:", offer.datetime)
                     print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
                                                "Akc. Cena", "Zanr"))
                     print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
@@ -533,7 +533,7 @@ def pretragaAkcija():
                             containsGenre(bookRepo.get_undeleted(x).genre, kategorija)]
                 if len(searched) > 0:
                     print("Code: ", offer.code)
-                    print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                    print("Akcija vazi do:", offer.datetime)
                     print(format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
                                                "Akc. Cena", "Zanr"))
                     print(format_linije.format("-" * 10, "-" * 20, "-" * 10, "-" * 20, "-" * 10, "-" * 10, "-" * 10,
@@ -550,7 +550,7 @@ def pretragaAkcija():
                     print()
                     print()
 
-        else:
+        elif i == 0:
             return None
 
 
@@ -650,8 +650,8 @@ def prikaziAkcije():
                                              book.year, offer.books_and_prices[code], book.genre))
 
                 print("-" * 120)
-    else:
-        return None
+        elif i == 0:
+            return None
 
 
 def registracija():
@@ -941,9 +941,12 @@ def dodavanjeakcije():
             print("Uspesno ste dodali novu akciju.")
         else:
             print("Neuspesno ste dodali novu akciju.")
+
+
 def izvestaji():
     bookRepo = BookRepository()
     recieptRepo = RecieptRepository()
+
     while True:
         print('Izaberite izvestaj:')
         print('1 --- Ukupna prodaja svih knjiga')
@@ -951,7 +954,6 @@ def izvestaji():
         print('3 --- Ukupna prodaja svih knjiga odabranog autora')
         print('4 --- Ukupna prodaja svih knjiga odabranog izdavača')
         print('5 --- Ukupna prodaja svih knjiga odabranog zanra')
-
         print('0 --- izlaz')
 
         i = int(input())
@@ -1121,6 +1123,8 @@ def izvestaji():
                         print(format_linije.format(code, book.name, book.isbn, book.author, book.publisher,
                                                    book.page_number,
                                                    book.year, book.genre, sold_books[code][1], sold_books[code][0]))
+
+
 def showMenuForManager(usertype):
     kontrolna = 42
     while kontrolna != 0:
@@ -1207,7 +1211,7 @@ def prodajaknjiga(cashier):
 
             for offer in offers:
                 print("Kod: ", offer.code)
-                print("Akcija vazi do:", offer.datetime.strftime("%d/%m/%Y"))
+                print("Akcija vazi do:", offer.datetime)
                 print(
                     format_linije.format("Kod", "Naziv", "Isbn", "Autor", "Izdavac", "Br str", "God izd",
                                          "Akc. Cena", "Zanr"))
